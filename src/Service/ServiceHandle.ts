@@ -1,6 +1,9 @@
+import fs from "fs";
 import path from "path";
 
 const file_path = path.join(process.cwd(), "/src/Database/db.json");
 export const read_product = () => {
-  console.log(file_path);
+  const product_read = fs.readFileSync(file_path, "utf-8");
+
+  return JSON.parse(product_read);
 };
