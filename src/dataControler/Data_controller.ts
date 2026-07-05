@@ -1,6 +1,6 @@
 import { IncomingMessage, type ServerResponse } from "http";
 import type { data_type_controller } from "../data_type/data_type_manage";
-import { read_product } from "../Service/ServiceHandle";
+import { insert_product, read_product } from "../Service/ServiceHandle";
 import { utility } from "../Utility/Utility";
 
 export const data_Controller = async (
@@ -13,8 +13,6 @@ export const data_Controller = async (
   const split_Url = url?.split("/");
   const id =
     split_Url && split_Url[1] === "products" ? Number(split_Url[2]) : null;
-
-  console.log("here is my id", id);
 
   if (url === "/products" && method === "GET") {
     const product_read_2 = read_product();
@@ -43,11 +41,20 @@ export const data_Controller = async (
   // Data crete using
   else if (method === "POST" && url === "/products") {
     const body = await utility(req);
+    const my_data_base = read_product();
+
+    const new_product = {
+      id: Date.now(),
+      ...body,
+    };
+    my_data_base.push(new_product);
+    insert_product(my_data_base);
+    console.log("Here is our body", new_product);
     res.writeHead(200, { "content-type": "Application/JSON" });
     res.end(
       JSON.stringify({
         message: "Here is our products",
-        // data: await utility(),
+        data: my_data_base,
       }),
     );
   }

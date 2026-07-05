@@ -7,3 +7,7 @@ export const read_product = () => {
 
   return JSON.parse(product_read);
 };
+
+export const insert_product = (payData: any) => {
+  fs.writeFileSync(file_path, JSON.stringify(payData));
+};
