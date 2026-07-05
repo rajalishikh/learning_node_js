@@ -1,8 +1,12 @@
-import type { IncomingMessage, ServerResponse } from "http";
-import { read_product } from "../Service/ServiceHandle";
+import { IncomingMessage, type ServerResponse } from "http";
 import type { data_type_controller } from "../data_type/data_type_manage";
+import { read_product } from "../Service/ServiceHandle";
+import { utility } from "../Utility/Utility";
 
-export const data_Controller = (req: IncomingMessage, res: ServerResponse) => {
+export const data_Controller = async (
+  req: IncomingMessage,
+  res: ServerResponse,
+) => {
   const url = req.url;
   const method = req.method;
 
@@ -21,7 +25,9 @@ export const data_Controller = (req: IncomingMessage, res: ServerResponse) => {
         data: product_read_2,
       }),
     );
-  } else if (method === "GET" && id != null) {
+  }
+  // Data get by Id
+  else if (method === "GET" && id != null) {
     const find_All_product = read_product();
     const find_Single_ID = find_All_product.find(
       (id_find: data_type_controller) => id_find.id === id,
@@ -31,6 +37,17 @@ export const data_Controller = (req: IncomingMessage, res: ServerResponse) => {
       JSON.stringify({
         message: "Here is our products",
         data: find_Single_ID,
+      }),
+    );
+  }
+  // Data crete using
+  else if (method === "POST" && url === "/products") {
+    const body = await utility(req);
+    res.writeHead(200, { "content-type": "Application/JSON" });
+    res.end(
+      JSON.stringify({
+        message: "Here is our products",
+        // data: await utility(),
       }),
     );
   }
